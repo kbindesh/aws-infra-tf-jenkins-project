@@ -15,7 +15,7 @@ pipeline {
                  script{
                         dir("terraform")
                         {
-                            git "https://github.com/kbindesh/aws-infra-tf-jenkins-project.git"
+                            checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/kbindesh/aws-infra-tf-jenkins-project.git']])
                         }
                     }
                 }
