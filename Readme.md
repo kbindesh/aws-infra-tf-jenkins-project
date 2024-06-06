@@ -201,11 +201,13 @@ sudo yum install -y git
 ### 3.2 Trigger the Jenkins job manually
 
 - Select the created Jenkins job >> click on **Build now** button
+  <img src="images/jenkinsjobbuild.png" width="400" height="310">
 
 ### 3.3 Trigger the Jenkins job automatically
 
 - In order to trigger the jenkins job, push some new code into your Github repo.
 - Verify the triggered job from the Jenkins dashboard.
+  <img src="images/jenkinsjobresult.png" width="500" height="210">
 
 ## Step-04: Verify the AWS resources
 
