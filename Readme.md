@@ -48,9 +48,9 @@ terraform apply --auto-approve
 terraform destroy --auto-approve
 ```
 
-### 1.3 Create a new remote repository in Github (for this lab)
+### 1.3 Create a new remote repository in SCM (Github)
 
-- Create a new repo with atleast three branches, namely:
+- Create a new repo with at least three branches, namely:
   - Development
   - Testing
   - Production
@@ -75,8 +75,9 @@ terraform destroy --auto-approve
 
 ### 2.2 Install and Configure Jenkins
 
-- Connect to Jenkins server
+- Connect to Jenkins server (EC2 Instance)
 - Configure Jenkins **On Amazon Linux 2 EC2 Instance**
+- Create a new file, say `config-jenkins.sh` and add the following script to it:
 
 ```
 #!/bin/bash
@@ -89,11 +90,31 @@ systemctl start jenkins
 systemctl enable jenkins
 ```
 
+- Execute the above created `config-jenkins.sh` file:
+
+```
+sudo sh config-jenkins.sh
+```
+
 - **On other platforms**
 
 - Refer to this link: https://www.jenkins.io/doc/book/installing/
 
-### 2.3 Create IAM Credentials for Jenkins Server to provision Infra in AWS
+### 2.4 Access Jenkins Dashboard
+
+- Open the browser and follow the below link to access the Jenkins service dashboard:
+
+```
+http://<jenkins_server_public_ip>:8080
+
+OR
+
+http://<jenkins_server_public_dns_name>:8080
+```
+
+- Follow the instructions to install the plugins and create an Admin user.
+
+### 2.3 Create IAM Credentials for Jenkins Server to provision infra in AWS
 
 - Sign-in to your AWS Account
 - Navigate to **IAM** >> **Users** >> **Create User**
@@ -105,9 +126,9 @@ systemctl enable jenkins
 
 ### 2.4 Save the IAM Credentials on Jenkins server
 
-- Access your Jenkins server's dashboard: http://jenkins_server_public_ip_or_dns:8080
-- From left-side panel, select Manage Jenkins >> Credentials
-- Select scope as System >> Global Credentials >> New Credential
+- Access your Jenkins server's dashboard: http://<jenkins_server_public_ip_or_dns>:8080
+- From left-side panel, select **Manage Jenkins** >> **Credentials**
+- Select scope as **System** >> **Global Credentials** >> **New Credential**
 
 ```
 # Credential #1
@@ -147,25 +168,45 @@ sudo yum -y install terraform
 ### 2.7 Download and Install Git
 
 ```
-
 # On Amazon Linux 2
-
 sudo yum install -y git
 
 ```
 
-- Refer to this link: https://git-scm.com/downloads.
+- Refer to this link: https://git-scm.com/downloads
 
-## Step-03: Create a Jenkins Job (Pipeline | event based)
+### 2.8 Install Jenkins Plugins
 
-### 3.1 Create a new Jenkins job of type Pipeline
+- Navigate to **Manage Jenkins** >> **Plugins** >> **Available Plugins**
+- Install following plugins:
+  - **Pipeline Stage View Plugin** (https://plugins.jenkins.io/pipeline-stage-view/)
+  - **Git** (https://plugins.jenkins.io/git/)
+  - **Terraform** (https://plugins.jenkins.io/terraform/)
 
-### 3.2 Test the Jenkins job manually
+## Step-03: Create a Jenkins Job (Pipeline | event based) and Trigger it
 
-## Step-04: Write a Jenkinsfile for infra deployment using Terraform
+### 3.1 Create a new Jenkins job of `Pipeline` type
 
-### 4.1 Create a Jenkinsfile (on local system)
+- Go to Jenkins Dashboard >> **New Item**
+- **Type**: Pipeline
+- **GitHub hook trigger for GITScm polling**: Enable
+- Under _Pipeline section_ >>
+  - **Definition**: Pipeline script for SCM
+  - **SCM**: Git
+  - **Repositories URL**: https://github.com/kbindesh/aws-infra-tf-jenkins-project.git
+  - **Credentials**: Credentials of your git repo if it is a private one
+  - **Branches to build**: <branch_name_of_your_github_repo>
+  - **Script Path**: Jenkinsfile
 
-### 4.2 Check-in the code to SCM (Github)
+### 3.2 Trigger the Jenkins job manually
 
-### 4.3 Validate the Jenkins job execution and AWS infrastructure creation
+- Select the created Jenkins job >> click on **Build now** button
+
+### 3.3 Trigger the Jenkins job automatically
+
+- In order to trigger the jenkins job, push some new code into your Github repo.
+- Verify the triggered job from the Jenkins dashboard.
+
+## Step-04: Verify the AWS resources
+
+- Navigate to the AWS Console and verify the created resources.
