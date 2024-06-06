@@ -154,7 +154,7 @@ sudo yum install -y git
 
 ```
 
-- Refer to this link: https://git-scm.com/downloads
+- Refer to this link: https://git-scm.com/downloads.
 
 ## Step-03: Create a Jenkins Job (Pipeline | event based)
 
